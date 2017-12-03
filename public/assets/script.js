@@ -35,8 +35,11 @@ var model3 = {};
 var rotate_speed = 0.05;
 var r_radian = 0;
 var c_radian = 0;
+var c_radian_speed = 0.007;
+var r_radian_speed = 0.01;
 var geometry = void 0;
 var material = void 0;
+var count = 0;
 
 function renderHandSpinner() {
   'use strict';
@@ -139,18 +142,25 @@ function addSpinner() {
 }
 
 function render() {
-  console.log("coming");
 
   requestAnimationFrame(render);
   r_radian += 0.01;
 
+  count++;
   for (var i = 0; i < howManySpinners; i++) {
     model[i].rotation.y += rotate_speed;
-    model[i].position.y += (Math.sin(r_radian) - Math.sin(r_radian - 0.01)) * 150;
-    console.log("hoge");
+    model[i].position.y += (Math.sin(r_radian) - Math.sin(r_radian - r_radian_speed)) * 150;
+
+    if (r_radian_speed == 0) {
+      if (count % 16 < 8) {
+        model[i].rotation.y += 0.02;
+      } else {
+        model[i].rotation.y -= 0.02;
+      }
+    }
   }
 
-  c_radian += 0.007;
+  c_radian += c_radian_speed;
   var cameraZ = 150 * Math.sin(c_radian) + 150;
   // let cameraZ = 0; 
   camera.position.set(0, 600, cameraZ);
@@ -162,6 +172,9 @@ function render() {
 function changeRotateSpeed() {
   //controls.autoRotateSpeed = vm.count*10;
   rotate_speed += vm.count * 0.01;
+  r_radian_speed = 0.01;
+  c_radian_speed = 0.007;
+
   for (var i = 0; i < howManySpinners; i++) {
 
     model[i].rotation.y = 1.8 * vm.count;
@@ -171,6 +184,8 @@ function changeRotateSpeed() {
 function Speed_0() {
   vm.count = 0;
   rotate_speed = 0;
+  r_radian_speed = 0;
+  c_radian_speed = 0;
   //addSpinner();
 }
 
